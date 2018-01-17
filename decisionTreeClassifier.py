@@ -3,13 +3,13 @@ import numpy as np
 import sklearn
 from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import SGDClassifier
+from sklearn.tree import DecisionTreeClassifier
 
 from nltk.tokenize import TweetTokenizer
 
 from basicFunctions import basicFunctions
 
-class SVM:
+class DecisionTree:
   X_train = []
   Y_train = []
   X_test = []
@@ -27,26 +27,25 @@ class SVM:
     self.labels = labels
 
   def classify(self):
-
     self.classifier = Pipeline([('feats', FeatureUnion([
-	 					 ('char', TfidfVectorizer(tokenizer=Tokenizer.tweetIdentity, lowercase=False, analyzer='char', ngram_range=(2,5), min_df=1)),#, max_features=100000)),
-	 					 ('word', TfidfVectorizer(tokenizer=Tokenizer.tweetIdentity, lowercase=False, analyzer='word', ngram_range=(1,4), min_df=1)),#, max_features=100000)),
+	 					 ('char', TfidfVectorizer(tokenizer=Tokenizer.tweetIdentity, norm="l1", lowercase=False, analyzer='char', ngram_range=(3,5), min_df=1)),#, max_features=100000)),
+	 					 ('word', TfidfVectorizer(tokenizer=Tokenizer.tweetIdentity, norm="l1", lowercase=False, analyzer='word', ngram_range=(1,3), min_df=1)),#, max_features=100000)),
       ])),
-      ('classifier', SGDClassifier(loss='hinge', random_state=42, max_iter=50, tol=None))
+      ('classifier', DecisionTreeClassifier(min_samples_leaf=2,max_depth=50))
     ])
-
 
     self.classifier.fit(self.X_train, self.Y_train)  
 
   def evaluate(self):
     self.Y_predicted = self.classifier.predict(self.X_test)
+
     self.accuracy, self.precision, self.recall, self.f1score = basicFunctions.getMetrics(self.Y_test, self.Y_predicted, self.labels)
 
   def printBasicEvaluation(self):    
     basicFunctions.printEvaluation(self.accuracy, self.precision, self.recall, self.f1score, "Basic Evaluation")
 
   def printClassEvaluation(self):
-    basicFunctions.printClassEvaluation(self.Y_test, self.Y_predicted, self.labels)
+   basicFunctions.printClassEvaluation(self.Y_test, self.Y_predicted, self.labels)
 
 class Tokenizer: #collection class of different tokenizers
   def tweetIdentity(arg):

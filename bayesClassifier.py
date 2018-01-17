@@ -9,7 +9,7 @@ from nltk.tokenize import TweetTokenizer
 
 from basicFunctions import basicFunctions
 
-class bayesClassifier:
+class Bayes:
   X_train = []
   Y_train = []
   X_test = []

@@ -1,4 +1,5 @@
 from collections import Counter
+import random
 import numpy as np
 
 import sklearn
@@ -9,6 +10,15 @@ from sklearn.metrics import f1_score
 class basicFunctions:
   def avg(l):
     return sum(l) / len(l)
+
+  def keyCounter(list):
+    return Counter(list)
+
+  def printStandardText(method):
+    print('#'*67)
+    print('{} \t LFD Output \t\t\t\t {}'.format('#'*10, '#'*10))
+    print('{} \t Machine Learning Method: {} \t\t {}'.format('#'*10, method, '#'*10))
+    print('#'*67)
 
   def printEvaluation(accuracy, precision, recall, f1score, text):    
     print("~~~" + text + "~~~ \n")
@@ -31,7 +41,7 @@ class basicFunctions:
         round(f1score, 3)
       ))
   def printLabelDistribution(labels):
-    label_distribution = Counter(labels)
+    label_distribution = basicFunctions.keyCounter(labels)
 
     print('~~~Label Distribution~~~')
     for label in label_distribution:
@@ -42,7 +52,6 @@ class basicFunctions:
     accuracy = np.mean(Y_predicted == Y_test)
     already_set = False
     clean_labels = [] #without errors
-
     if len(labels) == 1:
       if labels[0] not in Y_predicted:
         precision = 0.0
@@ -78,3 +87,30 @@ class basicFunctions:
               new_format.append(possible_language)
         predict_languages = new_format
     return predict_languages
+
+  def getUnskewedSubset(X_train, Y_train):
+    dataDistribution = basicFunctions.keyCounter(Y_train)
+    lowestAmount = 0
+    for label in dataDistribution:
+      if dataDistribution[label] < lowestAmount or lowestAmount == 0:
+        lowestAmount = dataDistribution[label]
+    keyDict = {}
+    for i, label in enumerate(Y_train):
+      if label not in keyDict:
+        keyDict[label] = [i]
+      else:
+        keyDict[label].append(i)
+
+    new_X_train = []
+    new_Y_train = []
+    all_keys = []
+    newDict = {}
+    for label in keyDict: 
+      newDict[label] = random.sample(keyDict[label], lowestAmount)
+      all_keys += newDict[label]
+      for i in newDict[label]:
+
+        new_X_train.append(X_train[i])
+        new_Y_train.append(Y_train[i])
+
+    return new_X_train, new_Y_train
