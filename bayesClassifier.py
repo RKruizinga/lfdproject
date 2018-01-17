@@ -39,22 +39,13 @@ class bayesClassifier:
   def evaluate(self):
     self.Y_predicted = self.classifier.predict(self.X_test)
 
-    self.accuracy = np.mean(self.Y_predicted == self.Y_test)
-    self.precision = sklearn.metrics.precision_score(self.Y_test, self.Y_predicted, average="macro")
-    self.recall = sklearn.metrics.recall_score(self.Y_test, self.Y_predicted, average="macro")
-    self.f1score = sklearn.metrics.f1_score(self.Y_test, self.Y_predicted, average="macro")
+    self.accuracy, self.precision, self.recall, self.f1score = basicFunctions.getMetrics(self.Y_test, self.Y_predicted, self.labels)
 
   def printBasicEvaluation(self):    
     basicFunctions.printEvaluation(self.accuracy, self.precision, self.recall, self.f1score, "Basic Evaluation")
 
   def printClassEvaluation(self):
-    print("Class \t Precision \t Recall \t F-score")
-    for label in self.labels:
-      precision = sklearn.metrics.precision_score(self.Y_test, self.Y_predicted, average="macro", labels=label)
-      recall = sklearn.metrics.recall_score(self.Y_test, self.Y_predicted, average="macro", labels=label)
-      f1score = sklearn.metrics.f1_score(self.Y_test, self.Y_predicted, average="macro", labels=label)
-
-      basicFunctions.printClassEvaluation(precision, recall, f1score, label)
+   basicFunctions.printClassEvaluation(self.Y_test, self.Y_predicted, self.labels)
 
 class Tokenizer: #collection class of different tokenizers
   def tweetIdentity(arg):

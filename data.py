@@ -12,7 +12,7 @@ class data:
 
   def __init__(self, folders):
     self.readFiles(folders)
-    self.languages = folders
+    self.languages = folders #get all languages wanted
 
   def readFiles(self, folders):
     for folder in folders:
@@ -45,10 +45,8 @@ class data:
                 line = line.split(':::')
                 self.labels[folder][line[0]] = (line[1], line[2]) # tuple, format: (gender, age)
 
-  ### To collect all tweets from all specified languages, insert 'all'
-  ### To collect tweets for a specific language, enter the language
-  def collectXY(self, languages = 'all'):
-    if languages == 'all':
+  def collectXY(self, data_method = 1):
+    if data_method == 1:
       for language in self.languages:
         for user in self.documents[language]:
           for document in self.documents[language][user]:
@@ -56,14 +54,14 @@ class data:
             self.Y['gender'].append(self.labels[language][user][0])
             self.Y['age'].append(self.labels[language][user][1])
             self.Y['language'].append(language)
-    elif languages in self.languages:
-      for user in self.documents[languages]:
-        for document in self.documents[languages][user]:
-          self.X.append(document)
-          self.Y['gender'].append(self.labels[languages][user][0])
-          self.Y['age'].append(self.labels[languages][user][1])
-          self.Y['language'].append(languages)
 
+    elif data_method == 2:
+      for language in self.languages:
+        for user in self.documents[language]:
+          self.X.append('. '.join(self.documents[language][user]))
+          self.Y['gender'].append(self.labels[language][user][0])
+          self.Y['age'].append(self.labels[language][user][1])
+          self.Y['language'].append(language)
 
   
 
