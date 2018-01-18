@@ -5,9 +5,8 @@ from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 
-from nltk.tokenize import TweetTokenizer
-
-from basicFunctions import basicFunctions
+from basicFunctions import BasicFunctions
+from tokenizer import Tokenizer
 
 class Bayes:
   X_train = []
@@ -39,16 +38,11 @@ class Bayes:
   def evaluate(self):
     self.Y_predicted = self.classifier.predict(self.X_test)
 
-    self.accuracy, self.precision, self.recall, self.f1score = basicFunctions.getMetrics(self.Y_test, self.Y_predicted, self.labels)
+    self.accuracy, self.precision, self.recall, self.f1score = BasicFunctions.getMetrics(self.Y_test, self.Y_predicted, self.labels)
 
   def printBasicEvaluation(self):    
-    basicFunctions.printEvaluation(self.accuracy, self.precision, self.recall, self.f1score, "Basic Evaluation")
+    BasicFunctions.printEvaluation(self.accuracy, self.precision, self.recall, self.f1score, "Basic Evaluation")
 
   def printClassEvaluation(self):
-   basicFunctions.printClassEvaluation(self.Y_test, self.Y_predicted, self.labels)
-
-class Tokenizer: #collection class of different tokenizers
-  def tweetIdentity(arg):
-	  tokenizer = TweetTokenizer(strip_handles=True, reduce_len=True)
-	  return tokenizer.tokenize(arg)
+   BasicFunctions.printClassEvaluation(self.Y_test, self.Y_predicted, self.labels)
 

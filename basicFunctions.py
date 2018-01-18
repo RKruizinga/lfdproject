@@ -7,18 +7,40 @@ from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import f1_score
 
-class basicFunctions:
+class BasicFunctions:
   def avg(l):
     return sum(l) / len(l)
 
   def keyCounter(list):
     return Counter(list)
 
-  def printStandardText(method):
-    print('#'*67)
-    print('{} \t LFD Output \t\t\t\t {}'.format('#'*10, '#'*10))
-    print('{} \t Machine Learning Method: {} \t\t {}'.format('#'*10, method, '#'*10))
-    print('#'*67)
+  def printStandardText(method, languages, variable):
+    print('#'*91)
+
+    if variable == 'age':
+      printVar = '\t\t\t\t\t\t'
+    else:
+      printVar = '\t\t\t\t\t'
+    
+    if len(languages) == 4:
+      printLan = '\t\t'
+    elif len(languages) == 3:
+      printLan = '\t\t\t'
+    elif len(languages) == 2:
+      printLan = '\t\t\t\t'
+    elif len(languages) == 1:
+      printLan = '\t\t\t\t\t'
+
+    if method == 'neural' or method == 'baseline':
+      printMethod = '\t\t\t\t'
+    else:
+      printMethod = '\t\t\t\t\t'
+
+    print('{} \t LFD Classification Output \t\t\t\t\t {}'.format('#'*10, '#'*10))
+    print('{} \t Machine Learning Method: {} {} {}'.format('#'*10, method, printMethod, '#'*10))
+    print('{} \t Predict Language(s): {} {} {}'.format('#'*10, ', '.join(languages), printLan, '#'*10))
+    print('{} \t Predict Variable: {} {} {}'.format('#'*10, variable, printVar, '#'*10))
+    print('#'*91)
 
   def printEvaluation(accuracy, precision, recall, f1score, text):    
     print("~~~" + text + "~~~ \n")
@@ -33,7 +55,7 @@ class basicFunctions:
     print("Class \t Precision \t Recall \t F-score")
 
     for label in labels:
-      accuracy, precision, recall, f1score = basicFunctions.getMetrics(Y_test, Y_predicted, [label])
+      accuracy, precision, recall, f1score = BasicFunctions.getMetrics(Y_test, Y_predicted, [label])
       print('{} \t {} \t\t {} \t\t {}'.format(
         label,
         round(precision, 3),
@@ -41,15 +63,19 @@ class basicFunctions:
         round(f1score, 3)
       ))
   def printLabelDistribution(labels):
-    label_distribution = basicFunctions.keyCounter(labels)
+    label_distribution = BasicFunctions.keyCounter(labels)
 
     print('~~~Label Distribution~~~')
     for label in label_distribution:
       print('{} \t {}'.format(label, label_distribution[label]))
-    print()
 
   def getMetrics(Y_test, Y_predicted, labels):
-    accuracy = np.mean(Y_predicted == Y_test)
+    accuracy_count = 0
+    for i in range(0, len(Y_predicted)):
+      if Y_predicted[i] == Y_test[i]:
+        accuracy_count += 1
+    accuracy = accuracy_count/len(Y_predicted)
+
     already_set = False
     clean_labels = [] #without errors
     if len(labels) == 1:
@@ -88,29 +114,34 @@ class basicFunctions:
         predict_languages = new_format
     return predict_languages
 
-  def getUnskewedSubset(X_train, Y_train):
-    dataDistribution = basicFunctions.keyCounter(Y_train)
-    lowestAmount = 0
-    for label in dataDistribution:
-      if dataDistribution[label] < lowestAmount or lowestAmount == 0:
-        lowestAmount = dataDistribution[label]
-    keyDict = {}
-    for i, label in enumerate(Y_train):
-      if label not in keyDict:
-        keyDict[label] = [i]
+  def getUnskewedSubset(X_train, Y_train, Y_train_raw = None):
+    if Y_train_raw == None:
+      data_distribution = BasicFunctions.keyCounter(Y_train)
+      Y = Y_train
+    else:
+      data_distribution = BasicFunctions.keyCounter(Y_train_raw)
+      Y = Y_train_raw
+
+    lowest_amount = 0
+    for label in data_distribution:
+      if data_distribution[label] < lowest_amount or lowest_amount == 0:
+        lowest_amount = data_distribution[label]
+    key_dict = {}
+    for i, label in enumerate(Y):
+      if label not in key_dict:
+        key_dict[label] = [i]
       else:
-        keyDict[label].append(i)
+        key_dict[label].append(i)
 
     new_X_train = []
     new_Y_train = []
     all_keys = []
-    newDict = {}
-    for label in keyDict: 
-      newDict[label] = random.sample(keyDict[label], lowestAmount)
-      all_keys += newDict[label]
-      for i in newDict[label]:
-
-        new_X_train.append(X_train[i])
-        new_Y_train.append(Y_train[i])
+    new_dict = {}
+    for label in key_dict: 
+      new_dict[label] = random.sample(key_dict[label], lowest_amount)
+      all_keys += new_dict[label]
+    for i in sorted(all_keys):
+      new_X_train.append(X_train[i])
+      new_Y_train.append(Y_train[i])
 
     return new_X_train, new_Y_train

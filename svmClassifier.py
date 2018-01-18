@@ -5,9 +5,9 @@ from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import SGDClassifier
 
-from nltk.tokenize import TweetTokenizer
-
-from basicFunctions import basicFunctions
+from basicFunctions import BasicFunctions
+from customFeatures import CustomFeatures
+from tokenizer import Tokenizer
 
 class SVM:
   X_train = []
@@ -29,8 +29,13 @@ class SVM:
   def classify(self):
 
     self.classifier = Pipeline([('feats', FeatureUnion([
-	 					 ('char', TfidfVectorizer(tokenizer=Tokenizer.tweetIdentity, lowercase=False, analyzer='char', ngram_range=(2,5), min_df=1)),#, max_features=100000)),
-	 					 ('word', TfidfVectorizer(tokenizer=Tokenizer.tweetIdentity, lowercase=False, analyzer='word', ngram_range=(1,4), min_df=1)),#, max_features=100000)),
+             #('wordCount', CustomFeatures.wordCount()),
+             #('characterCount', CustomFeatures.characterCount()),
+             ('userMentions', CustomFeatures.userMentions()),
+             #('urlMentions', CustomFeatures.urlMentions()),
+             #('hashtagUse', CustomFeatures.hashtagUse()),
+	 					 ('char', TfidfVectorizer(tokenizer=Tokenizer.tweetIdentity, lowercase=True, analyzer='char', ngram_range=(2,5), min_df=1)),#, max_features=100000)),
+	 					 ('word', TfidfVectorizer(tokenizer=Tokenizer.tweetIdentity, lowercase=False, analyzer='word', ngram_range=(1,3), min_df=1)),#, max_features=100000)),
       ])),
       ('classifier', SGDClassifier(loss='hinge', random_state=42, max_iter=50, tol=None))
     ])
@@ -40,16 +45,13 @@ class SVM:
 
   def evaluate(self):
     self.Y_predicted = self.classifier.predict(self.X_test)
-    self.accuracy, self.precision, self.recall, self.f1score = basicFunctions.getMetrics(self.Y_test, self.Y_predicted, self.labels)
+    self.accuracy, self.precision, self.recall, self.f1score = BasicFunctions.getMetrics(self.Y_test, self.Y_predicted, self.labels)
 
   def printBasicEvaluation(self):    
-    basicFunctions.printEvaluation(self.accuracy, self.precision, self.recall, self.f1score, "Basic Evaluation")
+    BasicFunctions.printEvaluation(self.accuracy, self.precision, self.recall, self.f1score, "Basic Evaluation")
 
   def printClassEvaluation(self):
-    basicFunctions.printClassEvaluation(self.Y_test, self.Y_predicted, self.labels)
+    BasicFunctions.printClassEvaluation(self.Y_test, self.Y_predicted, self.labels)
 
-class Tokenizer: #collection class of different tokenizers
-  def tweetIdentity(arg):
-	  tokenizer = TweetTokenizer(strip_handles=True, reduce_len=True)
-	  return tokenizer.tokenize(arg)
+
 

@@ -3,12 +3,13 @@ import numpy as np
 import sklearn
 from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.naive_bayes import MultinomialNB
+
+from nltk.tokenize import TweetTokenizer
 
 from basicFunctions import BasicFunctions
-from tokenizer import Tokenizer
 
-class DecisionTree:
+class Baseline:
   X_train = []
   Y_train = []
   X_test = []
@@ -25,14 +26,9 @@ class DecisionTree:
 
     self.labels = labels
 
-  def classify(self):
-    self.classifier = Pipeline([('feats', FeatureUnion([
-	 					 ('char', TfidfVectorizer(tokenizer=Tokenizer.tweetIdentity, norm="l1", lowercase=False, analyzer='char', ngram_range=(3,5), min_df=1)),#, max_features=100000)),
-	 					 ('word', TfidfVectorizer(tokenizer=Tokenizer.tweetIdentity, norm="l1", lowercase=False, analyzer='word', ngram_range=(1,3), min_df=1)),#, max_features=100000)),
-      ])),
-      ('classifier', DecisionTreeClassifier(min_samples_leaf=2,max_depth=50))
-    ])
+    self.classifier = Classifier()
 
+  def classify(self):
     self.classifier.fit(self.X_train, self.Y_train)  
 
   def evaluate(self):
@@ -45,3 +41,23 @@ class DecisionTree:
 
   def printClassEvaluation(self):
    BasicFunctions.printClassEvaluation(self.Y_test, self.Y_predicted, self.labels)
+
+class Classifier:
+  def __init__(self):
+    pass
+
+  def fit(self, X, y):
+    label_distribution = BasicFunctions.keyCounter(y)
+    highest_amount = 0
+    for label in label_distribution:
+      if label_distribution[label] > highest_amount or highest_amount == 0:
+        highest_amount = label_distribution[label]
+        self.most_frequent_class = label
+  
+  def predict(self, X):
+    Y_predicted = []
+    for doc in X:
+      Y_predicted.append(self.most_frequent_class) 
+    return Y_predicted
+
+
