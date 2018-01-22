@@ -9,6 +9,9 @@ from basicFunctions import BasicFunctions
 from customFeatures import CustomFeatures
 from tokenizer import Tokenizer
 
+from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
+
 class SVM:
   X_train = []
   Y_train = []
@@ -31,13 +34,15 @@ class SVM:
     self.classifier = Pipeline([('feats', FeatureUnion([
              #('wordCount', CustomFeatures.wordCount()),
              #('characterCount', CustomFeatures.characterCount()),
-             ('userMentions', CustomFeatures.userMentions()),
+             #('userMentions', CustomFeatures.userMentions()),
              #('urlMentions', CustomFeatures.urlMentions()),
              #('hashtagUse', CustomFeatures.hashtagUse()),
-	 					 ('char', TfidfVectorizer(tokenizer=Tokenizer.tweetIdentity, lowercase=True, analyzer='char', ngram_range=(2,5), min_df=1)),#, max_features=100000)),
-	 					 ('word', TfidfVectorizer(tokenizer=Tokenizer.tweetIdentity, lowercase=False, analyzer='word', ngram_range=(1,3), min_df=1)),#, max_features=100000)),
+	 					 ('char', TfidfVectorizer(tokenizer=Tokenizer.tweetIdentity, lowercase=False, analyzer='char', ngram_range=(3,5), min_df=1)),
+	 					 ('word', TfidfVectorizer(tokenizer=Tokenizer.tweetIdentity, lowercase=False, analyzer='word', ngram_range=(1,5), min_df=1)),
       ])),
+      #('classifier', SVC(decision_function_shape='ovr', kernel='linear'))
       ('classifier', SGDClassifier(loss='hinge', random_state=42, max_iter=50, tol=None))
+      #('classifier', LinearSVC())
     ])
 
 

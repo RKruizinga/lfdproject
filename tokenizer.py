@@ -1,9 +1,15 @@
 from nltk.tokenize import TweetTokenizer
+from nltk.tokenize import word_tokenize 
+from nltk.stem.porter import *
 
 class Tokenizer: #collection class of different tokenizers
   def tweetIdentity(arg):
-	  tokenizer = TweetTokenizer(strip_handles=True, reduce_len=True)
-	  return tokenizer.tokenize(arg)
+    tokenizer = TweetTokenizer(strip_handles=True, reduce_len=True)
+    stemmer = PorterStemmer()
+    return [stemmer.stem(i) for i in tokenizer.tokenize(arg)]
+  def tweetIdentity1(arg):
+    tokenizer = TweetTokenizer(strip_handles=True, reduce_len=True)
+    return tokenizer.tokenize(arg)
 
   def tokenizeTweets(tweets):
     tokenized_tweets = []
@@ -15,3 +21,7 @@ class Tokenizer: #collection class of different tokenizers
       tokenized_tweets.append(tokenized_tweet)
       
     return tokenized_tweets
+
+  def customTokenizer(arg):
+
+    return word_tokenize(arg)

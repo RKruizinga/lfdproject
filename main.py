@@ -22,7 +22,7 @@ random.seed(3)
 parser = argparse.ArgumentParser(description='system parameters')
 parser.add_argument('--method', type=str, default='svm', help='machine learning technique')
 parser.add_argument('--data_method', type=int, default=1, help='how to divide the data') #all documents from 1 user in one string, or every document in one string
-parser.add_argument('--predict_languages', type=str, default='e', help='predict languages: language name seperated with a comma or first letter of the language (without komma)') # ONLY USE English and Spanish for AGE!
+parser.add_argument('--predict_languages', type=str, default='es', help='predict languages: language name seperated with a comma or first letter of the language (without komma)') # ONLY USE English and Spanish for AGE!
 parser.add_argument('--predict_label', type=str, default='age', help='predict age or gender')
 parser.add_argument('--avoid_skewness', type=bool, default=False, help='how to train the dataset, without skewness in the data or with skewness')
 parser.add_argument('--kfold', type=int, default=1, help='Amount of Ks for cross validation, if cross validation.')

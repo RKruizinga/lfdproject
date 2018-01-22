@@ -32,20 +32,20 @@ class data:
             root = tree.getroot()
             for child in root: #get all utterances of a person
               if child.tag == 'document':
-                child.text = child.text.strip('\t') #strip all tabs
+                # child.text = child.text.strip('\t') #strip all tabs
           
-                child.text = child.text.replace('”', '') #strip all tabs
-                child.text = child.text.replace('“', '') #strip all tabs 
-                child.text = child.text.replace('"', '') #strip all tabs   
+                # child.text = child.text.replace('”', '') #strip all tabs
+                # child.text = child.text.replace('“', '') #strip all tabs 
+                # child.text = child.text.replace('"', '') #strip all tabs   
 
-                child.text = re.sub(r'http:\/\/t.co\S*', '#URL#', child.text)
-                child.text = re.sub(r'https:\/\/t.co\S*', '#URL#', child.text)
-                child.text = re.sub(r'\d+\-\d+\-\d+', '%DATE%', child.text)
-                child.text = re.sub(r'[0-2][0-9]{3}', '%YEAR%', child.text)
+                child.text = re.sub(r'http:\/\/t.co\S*', 'URL', child.text)
+                child.text = re.sub(r'https:\/\/t.co\S*', 'URL', child.text)
+                child.text = re.sub(r'\d+\-\d+\-\d+', 'DATE', child.text)
+                child.text = re.sub(r'[0-2][0-9]{3}', 'YEAR', child.text)
 
-                #child.text = re.sub(r'\d', '#', child.text) #replace each number with a char
+                # #child.text = re.sub(r'\d', '#', child.text) #replace each number with a char
 
-                child.text = re.sub(r'(.)\1{3,}', r'\1\1\1', child.text)
+                #child.text = re.sub(r'(.)\1{3,}', r'\1\1\1', child.text)
                 #print(child.text)
                 if file[:-4] in self.documents[folder]:
                   self.documents[folder][file[:-4]].append(child.text)
