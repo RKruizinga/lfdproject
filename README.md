@@ -1,5 +1,8 @@
 # Learning From Data
-
+Run with the following command for our best system (only on training for now, as the test set is not available yet)
+```
+python3 main.py --data_folder=data/gender_age_prediction/ --predict_label=gender --predict_languages=esid --method=svm --k=5 --print_details=5
+```
 # SGD sklearn (random_state=42, max_iter=50, tol=None, loss='hinge')
 **Languages:  eng, es (no dutch & ita because they have no age label)
 Predict:    age**
