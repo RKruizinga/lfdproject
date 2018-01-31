@@ -1,4 +1,5 @@
 from sklearn.linear_model import SGDClassifier
+from sklearn.model_selection import train_test_split
 
 import sklearn
 from sklearn.pipeline import Pipeline, FeatureUnion
@@ -48,6 +49,10 @@ class SVM:
     ])
 
     self.printer = Printer('Model Fitting', self.show_fitting)
+
+    #self.X_train, X_none, self.Y_train, Y_none = train_test_split(self.X_train, self.Y_train, test_size=0.2, random_state=42)
+    #self.printer.labelDistribution(self.Y_train, '80%')
+
     self.classifier.fit(self.X_train, self.Y_train)  
     self.printer.duration()
 

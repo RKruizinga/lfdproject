@@ -55,8 +55,8 @@ data = Data(options.args.avoid_skewness, options.args.data_folder, options.args.
 #Step 8.1: Add the files or folders the data is preserved in (only if available)
 if options.args.predict_languages:
   data.file_train = options.args.data_folder+'training/'
-  # data.file_development = 'eng-trial.pickle'
-  # data.file_test = 'eng-test.pickle'
+  data.file_development = options.args.data_folder+'test/'
+  #data.file_test = options.args.data_folder+'test/'
 
 #Custom function
 data.languages = options.args.predict_languages

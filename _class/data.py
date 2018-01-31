@@ -83,6 +83,7 @@ class Data:
 
     self.X_train = X_train
     self.Y_train = Y_train
+
     self.X = copy.copy(self.X_train)
     self.Y = copy.copy(self.Y_train)
   

@@ -1,4 +1,5 @@
 from sklearn.model_selection import KFold
+from sklearn.model_selection import train_test_split
 import numpy as np
 
 from _class.printer import Printer
@@ -36,7 +37,7 @@ class KFoldValidation:
         X_train, X_development = list(np.array(self.data.X)[train_index]), list(np.array(self.data.X)[test_index])
         Y_train, Y_development = list(np.array(self.data.Y)[train_index]), list(np.array(self.data.Y)[test_index])
         self.data.initialize(X_train, Y_train, X_development, Y_development)
-
+      
         classifier = selectClassifier(self.method, self.data, self.show_fitting)
         classifier.classify(self.features, self.new_classifier)
         classifier.evaluate()
